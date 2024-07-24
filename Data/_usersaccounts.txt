@@ -1,0 +1,7 @@
+﻿user1,password,ユーザー1
+user2,12345,ユーザー2
+user3,user3,ユーザー3
+USER4,password,ユーザー4
+User5,a1b2c3,
+user6,A1b2C3,
+Guest,,ゲスト
