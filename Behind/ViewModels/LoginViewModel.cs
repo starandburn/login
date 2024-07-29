@@ -28,15 +28,17 @@ public abstract partial class LoginViewModel : ViewModelBase, ILogWritable
 	public bool strict = false; // 厳密な比較
 	public bool nocase = true;  // 英字大小無視
 
-	#endregion
+    #endregion
 
-	#region フィールド
+    #region フィールド
 
-	// プロパティ用バッキングフィールド
-	private List<UserAccount> _userAccounts = new();
-	private string _workX = string.Empty;
-	private string _workY = string.Empty;
-	private string _workZ = string.Empty;
+    private static readonly Random Random = new Random();
+
+    // プロパティ用バッキングフィールド
+    private List<UserAccount> _userAccounts = new();
+	private Variable _workX = Variable.Empty;
+	private Variable _workY = Variable.Empty;
+	private Variable _workZ = Variable.Empty;
 	private string _bindUserId = string.Empty;
 	private string _bindPassword = string.Empty;
 	private SecurityLevel _securityLevel = SecurityLevel.None;
@@ -54,9 +56,9 @@ public abstract partial class LoginViewModel : ViewModelBase, ILogWritable
 
 	private DebugWindow? _debugWindow = null;
 
-	#region プロパティ
+    #region プロパティ
 
-	protected virtual string Description => "基本形";
+    protected virtual string Description => "基本形";
 
 	// 実装側で使用できる変数(プロパティ)
 
@@ -64,17 +66,17 @@ public abstract partial class LoginViewModel : ViewModelBase, ILogWritable
 	public string TitleText => $"{WindowTitle} - {Application.ProductName}【{Description}】";
 
 	// 自由に使用できる作業変数
-	public string x
+	public Variable x
 	{
 		get => _workX;
 		set => SetProperty(ref _workX, value);
 	}
-	public string y
+	public Variable y
 	{
 		get => _workY;
 		set => SetProperty(ref _workY, value);
 	}
-	public string z
+	public Variable z
 	{
 		get => _workZ;
 		set => SetProperty(ref _workZ, value);
@@ -369,17 +371,31 @@ public abstract partial class LoginViewModel : ViewModelBase, ILogWritable
 	protected void unlock(string userId) => unlock(userId);
 	protected bool locking(string userId) => IsLocked(userId);
 
-	protected void greet(string? message = null)
+    protected int dice(int max = 6) => GetRandom(1, max);
+	protected bool even(int value) => IsEvenNumber(value);
+	protected bool odd(int value) => IsOddNumber(value);
+
+    protected void greet(string? text = null, int? color = null)
 	{
-		SetMessage(message ?? "Hello!");
+        var col = color switch
+        {
+            1 => Color.Blue,
+            2 => Color.Red,
+            3 => Color.Green,
+            4 => Color.Yellow,
+            5 => Color.Purple,
+            _ => Color.Black,
+        };
+        SetMessage(text ?? "Good morning!", col);
 	}
+	protected void greet(int color, string? text = null) => greet(text, color);
 
-	#endregion
+    #endregion
 
-	//public event EventHandler<(EnteredText text, bool focus)>? TextChanged;
+    //public event EventHandler<(EnteredText text, bool focus)>? TextChanged;
 
-	// デバッグウィンドウを表示する
-	private void ShowDebugWindow()
+    // デバッグウィンドウを表示する
+    private void ShowDebugWindow()
 	{
 		_debugWindow = new DebugWindow(this);
 		_debugWindow.Show();
@@ -687,11 +703,11 @@ public abstract partial class LoginViewModel : ViewModelBase, ILogWritable
 		WriteLog($"データ上のパスワード情報をセキュリティレベルに従い更新しました。");
 	}
 
-	private void SetValue(string variable, object? value)
+	private void SetValue(string name, object? value)
 	{
 		var strValue = value?.ToString() ?? string.Empty;
 
-		switch (variable)
+		switch (name)
 		{
 			case nameof(x):
 				x = strValue;
@@ -705,7 +721,7 @@ public abstract partial class LoginViewModel : ViewModelBase, ILogWritable
 			default:
 				return;
 		}
-		WriteLog($"変数{variable}に値{ILoggerService.WQuote(strValue)}を設定しました。");
+		WriteLog($"変数{name}に値{ILoggerService.WQuote(strValue)}を設定しました。");
 	}
 
 	private bool CountUp(string userId, int limit)
@@ -749,8 +765,26 @@ public abstract partial class LoginViewModel : ViewModelBase, ILogWritable
 		WriteLog($"ユーザー{ILoggerService.Quote(userId)}は{(ret ? "アカウントがロックされています。" : "ロックされていません。")}");
 		return ret;
 	}
+	private int GetRandom(int minValue, int maxValue)
+	{
+		var ret = Random.Next(minValue, maxValue);
+		WriteLog($"{minValue}～{maxValue}のからランダムな値{ret}を取得しました。");
+		return ret;
+	}
+	private bool IsOddNumber(int value)
+	{
+		var ret = value % 2 != 0;
+		WriteLog($"{value}は奇数で{(ret ? "す" : "はありません")}。");
+		return ret;
+	}
+	private bool IsEvenNumber(int value)
+	{
+        var ret = value % 2 == 0;
+        WriteLog($"{value}は偶数で{(ret ? "す" : "はありません")}。");
+        return ret;
+    }
 
-	protected void ShowWelcome(string? userName = null)
+    protected void ShowWelcome(string? userName = null)
 	{
 		WriteLog($"ユーザー{ILoggerService.Quote(userName)}のウエルカム画面を表示します。");
 
