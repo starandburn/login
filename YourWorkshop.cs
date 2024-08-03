@@ -15,23 +15,21 @@
 namespace Nkk.IT.Trial.Programing.Login.ViewModels;
 public class YourWorkshop : LoginViewModel
 {
-    protected override void StartUp()
-    {
-        // ①システム開始前の準備処理をここに書いてください
-        ///////////////////////////////////////////////
-
-
-
-
-        ///////////////////////////////////////////////
-    }
-
     protected override void LoginProcess()
     {
         // ①ログイン処理をここに書いてください
         ///////////////////////////////////////////////
 
 
+
+        ///////////////////////////////////////////////
+    }
+
+
+    protected override void StartUp()
+    {
+        // ②システム開始前の準備処理をここに書いてください
+        ///////////////////////////////////////////////
 
 
         ///////////////////////////////////////////////
@@ -78,8 +76,8 @@ public class YourWorkshop : LoginViewModel
 
 #if MODE1
     public const int Mode = 1;
-#elif MODE99
-    public const int Mode = 99;
+#elif MODE100
+    public const int Mode = 100;
 #else
     public const int Mode = 0;
 #endif

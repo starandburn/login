@@ -1,6 +1,9 @@
-﻿namespace Nkk.IT.Trial.Programing.Login.Models
+﻿using System.ComponentModel;
+using System.DirectoryServices.ActiveDirectory;
+
+namespace Nkk.IT.Trial.Programing.Login.Models
 {
-    public class Variable
+    public class Variable 
     {
         public static readonly Variable Empty = new();
         public object? Value { get; } = null;
@@ -20,5 +23,6 @@
         {
             Value = value;
         }
+
     }
 }

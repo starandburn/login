@@ -6,6 +6,7 @@
 
         protected override void LoginProcess()
         {
+
             if (nguser(id)) ng(5);
             x = okpass(id);
 
