@@ -16,7 +16,7 @@ namespace Nkk.IT.Trial.Programing.Login.Factiries
 			{
 				case 1:
 					return new SampleViewModel();
-				case 99:
+				case 100:
 					return new CompleteViewModel();
 				default:
 					return new YourWorkshop();

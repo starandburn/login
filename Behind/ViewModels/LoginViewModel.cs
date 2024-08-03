@@ -6,12 +6,13 @@ using Nkk.IT.Trial.Programing.Login.Views;
 using System.ComponentModel;
 using System.Security.Cryptography;
 namespace Nkk.IT.Trial.Programing.Login.ViewModels;
+
 public abstract partial class LoginViewModel : ViewModelBase, ILogWritable
 {
+
 	#region 定数
 
 	private const string WindowTitle = "ログイン画面";
-
 	private const char NullChar = '\0'; // ヌル文字
 	private const char PasswordMaskChar = '*'; // パスワードマスク文字
 
@@ -25,8 +26,8 @@ public abstract partial class LoginViewModel : ViewModelBase, ILogWritable
 	public bool off = false;// 無効化
 
 	// 文字列比較方法
-	public bool strict = false; // 厳密な比較
-	public bool nocase = true;  // 英字大小無視
+	public bool strict = true; // 厳密な比較
+	public bool nocase = false;  // 英字大小無視
 
     #endregion
 
@@ -292,12 +293,13 @@ public abstract partial class LoginViewModel : ViewModelBase, ILogWritable
 	protected void sety(object? value) => SetValue(nameof(y), value);
 	protected void setz(object? value) => SetValue(nameof(z), value);
 
-	// 判定(ifと一緒に使う)
-	// 文字が空文字かどうか
-	protected bool empty(string? text) => IsEmpty(text);
+    // 判定(ifと一緒に使う)
+    // 文字が空文字かどうか
+    protected bool empty(string? text) => IsEmpty(text);
 
 	// ２つの文字が同じかどうか(strictをonにすると大文字小文字判定を厳格化)
 	protected bool same(string? textA, string? textB, bool strict = false) => IsSameText(textA, textB, strict);
+	protected bool same(Variable varA, Variable varB, bool strict = false) => IsSameText(varA.ToString(), varB.ToString(), strict);
 
 	// 文字列に特殊な処理を施したものを取得する
 	// 前後の空白文字を除去する
@@ -342,12 +344,19 @@ public abstract partial class LoginViewModel : ViewModelBase, ILogWritable
 	// ウィンドウ側入力欄操作
 	// 入力欄から値を読み出す(最初からid, passに直接入ってるので使わなくてもよい)
 	protected string read(EnteredText text) => ReadEnteredText(text);
+
+	protected string readid() => ReadEnteredText(new UserIdText());
+	protected string readpass() => ReadEnteredText(new PasswordText());
+
 	// 入力欄を消去する(必要あればフォーカスを当てる)
 	protected void clear(EnteredText text, bool focus = true) => ClearTextField(text, focus);
 
-	// 追加機能のON/OFF
-	// パスワードマスク機能(*で隠す)
-	protected void mask(bool state = true) => SetPasswordMaskEnabled(state);
+	protected void clearid(bool focus = true) => ClearTextField(new UserIdText(), focus);
+    protected void clearpass(bool focus = true) => ClearTextField(new PasswordText(), focus);
+
+    // 追加機能のON/OFF
+    // パスワードマスク機能(*で隠す)
+    protected void mask(bool state = true) => SetPasswordMaskEnabled(state);
 	// パスワード表示(目)ボタン
 	protected void eye(bool state = true) => SetEyeButtonVisible(state);
 	// セキュリティレベル(on/off、 数字による指定、列挙型による指定)
@@ -375,7 +384,7 @@ public abstract partial class LoginViewModel : ViewModelBase, ILogWritable
 	protected bool even(int value) => IsEvenNumber(value);
 	protected bool odd(int value) => IsOddNumber(value);
 
-    protected void greet(string? text = null, int? color = null)
+    protected void message(Variable? text = null, int? color = null)
 	{
         var col = color switch
         {
@@ -386,9 +395,9 @@ public abstract partial class LoginViewModel : ViewModelBase, ILogWritable
             5 => Color.Purple,
             _ => Color.Black,
         };
-        SetMessage(text ?? "Good morning!", col);
+        SetMessage(text ?? "this is message.", col);
 	}
-	protected void greet(int color, string? text = null) => greet(text, color);
+	protected void greet(int color, Variable? text = null) => message(text, color);
 
     #endregion
 
@@ -435,7 +444,7 @@ public abstract partial class LoginViewModel : ViewModelBase, ILogWritable
 			WriteLog($"実装された処理を実行します。");
 			LoginProcess();
 
-			ResetMessage();
+			//ResetMessage();
 		}
 		catch (SuccessException)
 		{

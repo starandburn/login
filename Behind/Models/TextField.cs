@@ -18,6 +18,10 @@
 
         public static implicit operator string(EnteredText text) => text?.Text?.ToString() ?? string.Empty;
         public static implicit operator EnteredText(string text) => new EnteredText(text);
+
+        public static implicit operator Variable(EnteredText text) => new Variable(text);
+        public static implicit operator EnteredText(Variable var) => new EnteredText(var);
+
     }
     public class UserIdText : EnteredText
     {
